@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Notes</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>Share Your Thoughts</h1>
+  </div>
+
+  <div class="main-container">
+
+    <!-- Upload -->
+    <div class="card light-orange">
+      <h2>Upload Your Notes</h2>
+
+      <form action="/upload" method="POST" enctype="multipart/form-data">
+        <input type="text" name="title" placeholder="Enter title" required>
+        <!-- ✅ FIXED name -->
+        <input type="file" name="file" required>
+        <button type="submit">Upload</button>
+      </form>
+
+    </div>
+
+    <!-- View -->
+    <div class="card dark-orange">
+      <h2>View Notes</h2>
+      <p>Click below to see uploaded notes</p>
+
+      <a href="/view.html">
+        <button type="button">View Notes</button>
+      </a>
+
+    </div>
+
+    <!-- Feedback -->
+    <div class="card light-orange small">
+      <h2>Feedback</h2>
+
+      <!-- ✅ FIXED form -->
+      <form action="/feedback" method="POST">
+        <textarea name="message" placeholder="Give your feedback"required></textarea>
+        <button type="submit">Submit</button>
+      </form>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

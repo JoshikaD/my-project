@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>View Notes</title>
+</head>
+<body>
+
+  <h2>Uploaded Notes</h2>
+
+  <ul id="fileList"></ul>
+
+  <script>
+    fetch('/notes')
+      .then(res => res.json())
+      .then(files => {
+        const list = document.getElementById('fileList');
+        list.innerHTML = "";
+
+        files.forEach(file => {
+          const li = document.createElement('li');
+
+          const link = document.createElement('a');
+          link.href = '/uploads/' + file.filename;
+          link.textContent = file.filename; // ✅ FIX
+          link.target = '_blank';
+
+          li.appendChild(link);
+          list.appendChild(li);
+        });
+      })
+      .catch(err => console.log(err));
+  </script>
+
+</body>
+</html>

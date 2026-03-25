@@ -1,0 +1,112 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f9;
+}
+
+/* Header */
+.header {
+  background-color: #0a2a66;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Center container */
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+/* Login card */
+.login-box {
+  background: white;
+  padding: 30px;
+  width: 320px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.login-box h2 {
+  margin-bottom: 10px;
+}
+
+.login-box p {
+  color: gray;
+  margin-bottom: 20px;
+}
+
+/* Inputs */
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+/* Button */
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: orange;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: darkorange;
+}
+/* Cards container */
+.main-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 40px;
+  flex-wrap: wrap;
+}
+
+/* Card design */
+.card {
+  padding: 20px;
+  border-radius: 12px;
+  width: 280px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Orange shades */
+.light-orange {
+  background-color: #ffd9b3;
+}
+
+.dark-orange {
+  background-color: #ffb366;
+}
+
+/* Smaller feedback box */
+.small {
+  height: 200px;
+}
+
+/* Textarea */
+textarea {
+  width: 100%;
+  height: 80px;
+  margin: 10px 0;
+  padding: 8px;
+}
+
+/* Button reuse */
+button {
+  margin-top: 10px;
+}
+.card h3 {
+  margin-bottom: 10px;
+}
