@@ -1,95 +1,102 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const multer = require('multer');
+const express = require("express");
+const mongoose = require("mongoose");
+const multer = require("multer");
 const path = require("path");
 
 const app = express();
 
-// ✅ Middleware
+// Middleware
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
-app.use('/uploads', express.static('uploads'));
+app.use(express.static("public"));
+app.use("/uploads", express.static("uploads"));
 
-// ✅ MongoDB (Render env variable)
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected ✅"))
-  .catch(err => console.log(err));
+// ✅ MongoDB connection (REPLACE URI)
+mongoose.connect("mongodb+srv://admin:Jo16sh11ika%40@cluster0.53brhfa.mongodb.net/notesDB?retryWrites=true&w=majority&appName=Cluster0")
+.then(() => console.log("DB connected"))
+.catch(err => console.log("Mongo error:", err));
 
-// ✅ Schemas
-const userSchema = new mongoose.Schema({
-  username: String,
-  email: String
-});
+// Models
+const File = require("./models/File");
+const Feedback = require("./models/Feedback");
 
-const noteSchema = new mongoose.Schema({
-  filename: String
-});
-
-const feedbackSchema = new mongoose.Schema({
-  message: String
-});
-
-// ✅ Models
-const User = mongoose.model('User', userSchema);
-const Note = mongoose.model('Note', noteSchema);
-const Feedback = mongoose.model('Feedback', feedbackSchema);
-
-// ✅ File upload
+// Multer setup
 const storage = multer.diskStorage({
-  destination: './uploads/',
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
   filename: (req, file, cb) => {
-    cb(null, file.originalname);
+    cb(null, Date.now() + "-" + file.originalname);
   }
 });
+
 const upload = multer({ storage });
 
-// ✅ Routes
 
-// Home page
+// ✅ LOGIN ROUTE
+app.post("/login", (req, res) => {
+  const { username, email } = req.body;
+
+  console.log("User logged in:", username, email);
+
+  res.redirect("/upload.html");
+});
+
+
+// ✅ UPLOAD PDF
+app.post("/upload", upload.single("pdf"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.send("No file uploaded");
+    }
+
+    const file = new File({
+      filename: req.file.filename,
+      path: req.file.path
+    });
+
+    await file.save();
+    res.redirect("/upload.html");
+
+  } catch (err) {
+    console.log(err);
+    res.send("Upload error");
+  }
+});
+
+
+// ✅ GET FILES
+app.get("/files", async (req, res) => {
+  try {
+    const files = await File.find();
+    res.json(files);
+  } catch (err) {
+    res.status(500).send("Error fetching files");
+  }
+});
+
+
+// ✅ FEEDBACK
+app.post("/feedback", async (req, res) => {
+  try {
+    const feedback = new Feedback(req.body);
+    await feedback.save();
+    res.send("Feedback saved");
+  } catch (err) {
+    console.log(err);
+    res.send("Feedback error");
+  }
+});
+
+
+// ✅ ROOT ROUTE (optional)
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// ✅ LOGIN CLICK → redirect to upload page
-app.get("/login", (req, res) => {
-  res.redirect("/upload.html");
-});
 
-// Upload notes
-app.post('/upload', upload.single('file'), async (req, res) => {
-  const newNote = new Note({
-    filename: req.file.filename
-  });
-
-  await newNote.save();
-
-  res.send(`
-    <h2>Uploaded Successfully ✅</h2>
-    <p>${req.file.filename}</p>
-    <a href="/upload.html">Upload Another</a>
-  `);
-});
-
-// View notes
-app.get('/notes', async (req, res) => {
-  const notes = await Note.find();
-  res.json(notes);
-});
-
-// Feedback
-app.post('/feedback', async (req, res) => {
-  const newFeedback = new Feedback({
-    message: req.body.message
-  });
-
-  await newFeedback.save();
-
-  res.send("Feedback saved");
-});
-
-// ✅ IMPORTANT for Render
+// ✅ START SERVER
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log("Server running on port", PORT);
 });
