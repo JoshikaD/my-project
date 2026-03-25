@@ -18,9 +18,9 @@ app.use(express.static('public'));
 app.use('/uploads', express.static('uploads'));
 
 // ✅ MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/notesDB')
-.then(() => console.log("MongoDB Connected ✅"))
-.catch(err => console.log(err));
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("DB connected"))
+  .catch(err => console.log(err));
 
 // ✅ Schemas
 const userSchema = new mongoose.Schema({
