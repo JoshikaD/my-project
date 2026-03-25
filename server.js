@@ -1,25 +1,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
-
-const app = express();
 const path = require("path");
 
-app.use(express.static(path.join(__dirname, "public")));
+const app = express();
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
 // ✅ Middleware
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
-
-// ✅ VERY IMPORTANT (serve PDFs)
+app.use(express.static(path.join(__dirname, "public")));
 app.use('/uploads', express.static('uploads'));
 
-// ✅ MongoDB
+// ✅ MongoDB (Render env variable)
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("DB connected"))
+  .then(() => console.log("MongoDB Connected ✅"))
   .catch(err => console.log(err));
 
 // ✅ Schemas
@@ -50,23 +43,16 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// ✅ ROUTES
+// ✅ Routes
 
 // Home page
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html');
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Login (save user + go next page)
-app.post('/login', async (req, res) => {
-  const username = req.body.username;
-  const email = req.body.email;
-
-  // Save user
-  await User.create({ username, email });
-
-  // Go to upload page
-  res.sendFile(__dirname + '/public/upload.html');
+// ✅ LOGIN CLICK → redirect to upload page
+app.get("/login", (req, res) => {
+  res.redirect("/upload.html");
 });
 
 // Upload notes
@@ -92,19 +78,18 @@ app.get('/notes', async (req, res) => {
 
 // Feedback
 app.post('/feedback', async (req, res) => {
-  console.log("Feedback received:", req.body); // 👈 check this
-
   const newFeedback = new Feedback({
     message: req.body.message
   });
 
   await newFeedback.save();
 
-  console.log("Saved in DB ✅");
-
   res.send("Feedback saved");
 });
-//server
-app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");    
-    });
+
+// ✅ IMPORTANT for Render
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
